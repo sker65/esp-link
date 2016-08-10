@@ -205,6 +205,7 @@ int ICACHE_FLASH_ATTR cgiMenu(HttpdConnData *connData) {
   os_sprintf(buff,
     "{ "
       "\"menu\": [ "
+        "\"goDMD\", \"/godmd/index.html\", "
         "\"Home\", \"/home.html\", "
         "\"WiFi Station\", \"/wifi/wifiSta.html\", "
         "\"WiFi Soft-AP\", \"/wifi/wifiAp.html\", "
