@@ -134,6 +134,7 @@ YUI_COMPRESSOR ?= yuicompressor-2.4.8.jar
 
 HTML_PATH = $(abspath ./html)/
 WIFI_PATH = $(HTML_PATH)wifi/
+GODMD_PATH = $(HTML_PATH)godmd/
 
 ESP_FLASH_MAX       ?= 503808  # max bin file
 
@@ -418,13 +419,15 @@ ifeq ("$(COMPRESS_W_HTMLCOMPRESSOR)","yes")
 $(BUILD_BASE)/espfs_img.o: tools/$(HTML_COMPRESSOR)
 endif
 
-$(BUILD_BASE)/espfs_img.o: html/ html/wifi/ espfs/mkespfsimage/mkespfsimage
-	$(Q) rm -rf html_compressed; mkdir html_compressed; mkdir html_compressed/wifi;
+$(BUILD_BASE)/espfs_img.o: html/ html/wifi/ html/godmd/ espfs/mkespfsimage/mkespfsimage
+	$(Q) rm -rf html_compressed; mkdir html_compressed; mkdir html_compressed/wifi; mkdir html_compressed/godmd;
 	$(Q) cp -r html/*.ico html_compressed;
 	$(Q) cp -r html/*.css html_compressed;
 	$(Q) cp -r html/*.js html_compressed;
 	$(Q) cp -r html/wifi/*.png html_compressed/wifi;
 	$(Q) cp -r html/wifi/*.js html_compressed/wifi;
+	$(Q) cp -r html/godmd/*.png html_compressed/godmd;
+	$(Q) cp -r html/godmd/*.js html_compressed/godmd;
 ifeq ("$(COMPRESS_W_HTMLCOMPRESSOR)","yes")
 	$(Q) echo "Compression assets with htmlcompressor. This may take a while..."
 		$(Q) java -jar tools/$(HTML_COMPRESSOR) \
@@ -436,6 +439,10 @@ ifeq ("$(COMPRESS_W_HTMLCOMPRESSOR)","yes")
 		-t html --remove-surrounding-spaces max --remove-quotes --remove-intertag-spaces \
 		-o $(abspath ./html_compressed)/wifi/ \
 		$(WIFI_PATH)*.html
+	$(Q) java -jar tools/$(HTML_COMPRESSOR) \
+		-t html --remove-surrounding-spaces max --remove-quotes --remove-intertag-spaces \
+		-o $(abspath ./html_compressed)/godmd/ \
+		$(GODMD_PATH)*.html
 	$(Q) echo "Compression assets with yui-compressor. This may take a while..."
 	$(Q) for file in `find html_compressed -type f -name "*.js"`; do \
 			java -jar tools/$(YUI_COMPRESSOR) $$file --line-break 0 -o $$file; \
@@ -447,6 +454,7 @@ else
 	$(Q) cp -r html/head- html_compressed;
 	$(Q) cp -r html/*.html html_compressed;
 	$(Q) cp -r html/wifi/*.html html_compressed/wifi;	
+	$(Q) cp -r html/godmd/*.html html_compressed/godmd;	
 endif
 ifeq (,$(findstring mqtt,$(MODULES)))
 	$(Q) rm -rf html_compressed/mqtt.html
@@ -455,6 +463,9 @@ endif
 	$(Q) for file in `find html_compressed -type f -name "*.htm*"`; do \
 		cat html_compressed/head- $$file >$${file}-; \
 		mv $$file- $$file; \
+	done
+	$(Q) for file in `find html_compressed -type f -name "*.htx"`; do \
+		mv html_compressed/$${file} html_compressed/$${file%.*}.html;
 	done
 	$(Q) rm html_compressed/head-
 	$(Q) cd html_compressed; find . \! -name \*- | ../espfs/mkespfsimage/mkespfsimage > ../build/espfs.img; cd ..;
