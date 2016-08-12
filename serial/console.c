@@ -91,14 +91,23 @@ ajaxConsoleRest(HttpdConnData *connData) {
 
   if (connData->cgiData == NULL ) { // first request
 	  if( connData->requestType == HTTPD_METHOD_POST ) {
-		  uart0_tx_buffer(connData->post->buff, connData->post->len);
+		  os_sprintf(buff, "{\"resource\": \"%s\", \"verb\": \"post\", \"data\": "\"",
+				  connData->url+12 );
+		  int i = connData->post->len;
+		  char *p = connData->post->buff;
+		  char *t = buff + strlen(buff);
+		  while( i > 0 && t < buff+2048) {
+			  *t++ = *p++;
+			  i--;
+		  }
+		  *t++ = 13; *t++ = 10; *t++ = 0;
+		  uart0_tx_buffer(buff, strlen(buff));
 		  status = 200;
 	  } else {
-		  len = httpdFindArg(connData->getArgs, "cmd", buff, sizeof(buff));
-		  if (len > 0) {
-		    uart0_tx_buffer(buff, len);
-		    status = 200;
-		  }
+		  // path prefix: /godmd/rest/ 12 chars
+		  os_sprintf(buff, "{\"resource\": \"%s\", \"verb\": \"get\" }\r\n", connData->url+12);
+		  uart0_tx_buffer(buff, len);
+		  status = 200;
 	  }
 
 	  jsonHeader(connData, status);
