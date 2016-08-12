@@ -9,6 +9,7 @@ int ajaxConsole(HttpdConnData *connData);
 int ajaxConsoleReset(HttpdConnData *connData);
 int ajaxConsoleBaud(HttpdConnData *connData);
 int ajaxConsoleSend(HttpdConnData *connData);
+int ajaxConsoleRest(HttpdConnData *connData);
 int tplConsole(HttpdConnData *connData, char *token, void **arg);
 
 #endif
