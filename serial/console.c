@@ -123,6 +123,7 @@ ajaxConsoleRest(HttpdConnData *connData) {
 	  int start = (int)(connData->cgiData) & 0x0FFFF;
 	  int rd = (console_rd+start) % BUF_MAX;
 	  int done = 0;
+	  len = 0;
 	  while (restTimeout == 0 && len < 2040 && rd != console_wr) {
 	    uint8_t c = console_buf[rd];
 	    if (c == '\r') {
