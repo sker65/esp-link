@@ -132,7 +132,7 @@ ajaxConsoleRest(HttpdConnData *connData) {
 	    }
 	    rd = (rd + 1) % BUF_MAX;
 	  }
-	  httpdSend(connData, buff, len);
+	  if( len > 0 ) httpdSend(connData, buff, len);
 	  if( done == 0 ) {
 		  connData->cgiData = (void*)  (console_rd | 0x10000); // store last read pos
 		  return HTTPD_CGI_MORE;
