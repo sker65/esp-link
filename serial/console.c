@@ -105,7 +105,7 @@ ajaxConsoleRest(HttpdConnData *connData) {
 		  status = 200;
 	  } else {
 		  // path prefix: /godmd/rest/ 12 chars
-		  os_sprintf(buff, "{\"resource\": \"%s\", \"verb\": \"get\" }\r\n", (char*)connData->url+12);
+		  os_sprintf(buff, "get%s\r\n", (char*)connData->url+12);
 		  uart0_tx_buffer(buff, strlen(buff));
 		  status = 200;
 	  }
