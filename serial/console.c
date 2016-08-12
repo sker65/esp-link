@@ -117,10 +117,10 @@ ajaxConsoleRest(HttpdConnData *connData) {
 
 	  jsonHeader(connData, status);
 	  console_rd = console_wr = console_pos = 0;
-	  connData->cgiData = (void*)console_rd | 0x10000; // store last read pos
+	  connData->cgiData = (void*) (console_rd | 0x10000); // store last read pos
 	  return HTTPD_CGI_MORE;
   } else {  // sub sequent request
-	  int start = (int) ( connData->cgiData & 0x0FFFF);
+	  int start = (int)(connData->cgiData) & 0x0FFFF;
 	  int rd = (console_rd+start) % BUF_MAX;
 	  int done = 0;
 	  while (restTimeout == 0 && len < 2040 && rd != console_wr) {
@@ -138,7 +138,7 @@ ajaxConsoleRest(HttpdConnData *connData) {
 	  }
 	  httpdSend(connData, buff, len);
 	  if( done == 0 ) {
-		  connData->cgiData = (void*)console_rd | 0x10000; // store last read pos
+		  connData->cgiData = (void*)  (console_rd | 0x10000); // store last read pos
 		  return HTTPD_CGI_MORE;
 	  }
   }
