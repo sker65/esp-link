@@ -81,18 +81,9 @@ ajaxConsoleBaud(HttpdConnData *connData) {
   return HTTPD_CGI_DONE;
 }
 
-static ETSTimer restTimer;
-static volatile int restTimeout = 0;
-// Timer callback to timeout the rest request
-static void ICACHE_FLASH_ATTR restTimerCb(void *v) {
-	restTimeout = 1;
-}
-
-
 int ICACHE_FLASH_ATTR
 ajaxConsoleRest(HttpdConnData *connData) {
   if (connData->conn==NULL) {
-	  os_timer_disarm(&restTimer);
 	  return HTTPD_CGI_DONE; // Connection aborted. Clean up.
   }
   char buff[2048];
@@ -109,11 +100,6 @@ ajaxConsoleRest(HttpdConnData *connData) {
 		    status = 200;
 		  }
 	  }
-	  // figure out where to start in buffer based on URI param
-	  restTimeout = 0;
-	  os_timer_disarm(&restTimer);
-	  os_timer_setfn(&restTimer, restTimerCb, NULL);
-	  os_timer_arm(&restTimer, 6000, 0);
 
 	  jsonHeader(connData, status);
 	  console_rd = console_wr = console_pos = 0;
@@ -143,7 +129,6 @@ ajaxConsoleRest(HttpdConnData *connData) {
 		  return HTTPD_CGI_MORE;
 	  }
   }
-  os_timer_disarm(&restTimer);
   connData->cgiData=NULL;
   return HTTPD_CGI_DONE;
 
