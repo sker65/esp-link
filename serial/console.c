@@ -116,25 +116,27 @@ ajaxConsoleRest(HttpdConnData *connData) {
   // reset buffer
   console_rd = console_wr = console_pos = 0;
   len = 0;
-  int seenCR = 0;
+//  int seenCR = 0;
   // wait for response
-  int rd = (console_rd+start) % BUF_MAX;
-  while (restTimeout==0 && len < 2040 && rd != console_wr) {
-    uint8_t c = console_buf[rd];
-    if (c == '\r') {
-    	seenCR = 1;
-    } else if( c == '\n' ) {
-    	break;
+  while (restTimeout==0 && len < 2040 ) {
+    if( console_rd != console_wr ) {
+	uint8_t c = console_buf[console_rd];
+	if (c == '\r') {
+//	seenCR = 1;
+	} else if( c == '\n' ) {
+	break;
+	} else {
+	buff[len++] = c;
+	}
     } else {
-        buff[len++] = c;
+        os_delay_us(200*1000);
     }
-    rd = (rd + 1) % BUF_MAX;
   }
   if( restTimeout == 0) {
 	  httpdSend(connData, buff, len);
   } else {
 	  len = os_sprintf(buff,"{ \"error:\" \"timeout\"}");
-	  httpdSend(connData, buff, len)
+	  httpdSend(connData, buff, len);
   }
   return HTTPD_CGI_DONE;
 }
