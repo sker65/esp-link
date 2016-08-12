@@ -91,54 +91,61 @@ static void ICACHE_FLASH_ATTR restTimerCb(void *v) {
 
 int ICACHE_FLASH_ATTR
 ajaxConsoleRest(HttpdConnData *connData) {
-  if (connData->conn==NULL) return HTTPD_CGI_DONE; // Connection aborted. Clean up.
+  if (connData->conn==NULL) {
+	  os_timer_disarm(&restTimer);
+	  return HTTPD_CGI_DONE; // Connection aborted. Clean up.
+  }
   char buff[2048];
   int len, status = 400;
 
-  if( connData->requestType == HTTPD_METHOD_POST ) {
-	  uart0_tx_buffer(connData->post->buff, connData->post->len);
-	  status = 200;
-  } else {
-	  len = httpdFindArg(connData->getArgs, "cmd", buff, sizeof(buff));
-	  if (len > 0) {
-	    uart0_tx_buffer(buff, len);
-	    status = 200;
+  if (connData->cgiData == NULL ) { // first request
+	  if( connData->requestType == HTTPD_METHOD_POST ) {
+		  uart0_tx_buffer(connData->post->buff, connData->post->len);
+		  status = 200;
+	  } else {
+		  len = httpdFindArg(connData->getArgs, "cmd", buff, sizeof(buff));
+		  if (len > 0) {
+		    uart0_tx_buffer(buff, len);
+		    status = 200;
+		  }
+	  }
+	  // figure out where to start in buffer based on URI param
+	  restTimeout = 0;
+	  os_timer_disarm(&restTimer);
+	  os_timer_setfn(&restTimer, restTimerCb, NULL);
+	  os_timer_arm(&restTimer, 2000, 0);
+
+	  jsonHeader(connData, status);
+	  console_rd = console_wr = console_pos = 0;
+	  connData->cgiData = (void*)console_rd | 0x10000; // store last read pos
+	  return HTTPD_CGI_MORE;
+  } else {  // sub sequent request
+	  int start = (int) ( connData->cgiData & 0x0FFFF);
+	  int rd = (console_rd+start) % BUF_MAX;
+	  int done = 0;
+	  while (restTimeout == 0 && len < 2040 && rd != console_wr) {
+	    uint8_t c = console_buf[rd];
+	    if (c == '\r') {
+	      // this is crummy, but browsers display a newline for \r\n sequences
+	    	done= 1;
+	    	break;
+	    } else if (c < ' ') {
+	      len += os_sprintf(buff+len, "\\u%04x", c);
+	    } else {
+	      buff[len++] = c;
+	    }
+	    rd = (rd + 1) % BUF_MAX;
+	  }
+	  httpdSend(connData, buff, len);
+	  if( done == 0 ) {
+		  connData->cgiData = (void*)console_rd | 0x10000; // store last read pos
+		  return HTTPD_CGI_MORE;
 	  }
   }
-
-  // figure out where to start in buffer based on URI param
-  restTimeout = 0;
   os_timer_disarm(&restTimer);
-  os_timer_setfn(&restTimer, restTimerCb, NULL);
-  os_timer_arm(&restTimer, 2000, 0);
-
-  jsonHeader(connData, status);
-  // reset buffer
-  console_rd = console_wr = console_pos = 0;
-  len = 0;
-//  int seenCR = 0;
-  // wait for response
-  while (restTimeout==0 && len < 2040 ) {
-    if( console_rd != console_wr ) {
-	uint8_t c = console_buf[console_rd];
-	if (c == '\r') {
-//	seenCR = 1;
-	} else if( c == '\n' ) {
-	break;
-	} else {
-	buff[len++] = c;
-	}
-    } else {
-        os_delay_us(200*1000);
-    }
-  }
-  if( restTimeout == 0) {
-	  httpdSend(connData, buff, len);
-  } else {
-	  len = os_sprintf(buff,"{ \"error:\" \"timeout\"}");
-	  httpdSend(connData, buff, len);
-  }
+  connData->cgiData=NULL;
   return HTTPD_CGI_DONE;
+
 }
 
 
