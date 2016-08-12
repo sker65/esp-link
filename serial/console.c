@@ -113,7 +113,7 @@ ajaxConsoleRest(HttpdConnData *connData) {
 	  restTimeout = 0;
 	  os_timer_disarm(&restTimer);
 	  os_timer_setfn(&restTimer, restTimerCb, NULL);
-	  os_timer_arm(&restTimer, 2000, 0);
+	  os_timer_arm(&restTimer, 6000, 0);
 
 	  jsonHeader(connData, status);
 	  console_rd = console_wr = console_pos = 0;
