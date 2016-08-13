@@ -70,7 +70,7 @@ endif
 
 # Clean up SDK path
 SDK_BASE := $(abspath $(SDK_BASE))
-$(warning Using SDK from $(SDK_BASE))
+$(info Using SDK from $(SDK_BASE))
 
 # Path to bootloader file
 BOOTFILE	?= $(SDK_BASE/bin/boot_v1.5.bin)
@@ -191,9 +191,11 @@ endif
 DATE    := $(shell date '+%F %T')
 BRANCH  ?= $(shell if git diff --quiet HEAD; then git describe --tags; \
                    else git symbolic-ref --short HEAD; fi)
+ESP_LINK_VERSION	?= $(shell git describe --abbrev=0 --tags)
+GODMD_VERSION		?= $(shell cd ../godmd-stm32; git describe --abbrev=0 --tags; cd ../esp-link)
 SHA     := $(shell if git diff --quiet HEAD; then git rev-parse --short HEAD | cut -d"/" -f 3; \
                    else echo "development"; fi)
-VERSION ?=esp-link $(BRANCH) - $(DATE) - $(SHA) - goDMD v0.29
+VERSION ?=esp-link $(ESP_LINK_VERSION) - $(DATE) - goDMD $(GODMD_VERSION)
 
 # Output directors to store intermediate compiled files
 # relative to the project directory
@@ -370,8 +372,8 @@ $(FW_BASE)/user1.bin: $(USER1_OUT) $(FW_BASE)
 	$(Q) COMPILE=gcc PATH=$(XTENSA_TOOLS_ROOT):$(PATH) python $(APPGEN_TOOL) $(USER1_OUT) 2 $(ESP_FLASH_MODE) $(ESP_FLASH_FREQ_DIV) $(ESP_SPI_SIZE) 0
 	$(Q) rm -f eagle.app.v6.*.bin
 	$(Q) mv eagle.app.flash.bin $@
-	@echo "** user1.bin uses $$(stat -c '%s' $@) bytes of" $(ESP_FLASH_MAX) "available"
-	$(Q) if [ $$(stat -c '%s' $@) -gt $$(( $(ESP_FLASH_MAX) )) ]; then echo "$@ too big!"; false; fi
+	@echo "** user1.bin uses $$(stat -f '%z' $@) bytes of" $(ESP_FLASH_MAX) "available"
+	$(Q) if [ $$(stat -f '%z' $@) -gt $$(( $(ESP_FLASH_MAX) )) ]; then echo "$@ too big!"; false; fi
 
 $(FW_BASE)/user2.bin: $(USER2_OUT) $(FW_BASE)
 	$(Q) $(OBJCP) --only-section .text -O binary $(USER2_OUT) eagle.app.v6.text.bin
@@ -381,7 +383,7 @@ $(FW_BASE)/user2.bin: $(USER2_OUT) $(FW_BASE)
 	$(Q) COMPILE=gcc PATH=$(XTENSA_TOOLS_ROOT):$(PATH) python $(APPGEN_TOOL) $(USER2_OUT) 2 $(ESP_FLASH_MODE) $(ESP_FLASH_FREQ_DIV) $(ESP_SPI_SIZE) 0
 	$(Q) rm -f eagle.app.v6.*.bin
 	$(Q) mv eagle.app.flash.bin $@
-	$(Q) if [ $$(stat -c '%s' $@) -gt $$(( $(ESP_FLASH_MAX) )) ]; then echo "$@ too big!"; false; fi
+	$(Q) if [ $$(stat -f '%z' $@) -gt $$(( $(ESP_FLASH_MAX) )) ]; then echo "$@ too big!"; false; fi
 
 $(APP_AR): $(OBJ)
 	$(vecho) "AR $@"
