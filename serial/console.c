@@ -101,26 +101,29 @@ ajaxConsoleRest(HttpdConnData *connData) {
 			  i--;
 		  }
 		  *t++ = 13; *t++ = 10; *t++ = 0;
+		  console_rd = console_wr = console_pos = 0;
 		  uart0_tx_buffer(buff, strlen(buff));
 		  status = 200;
 	  } else {
 		  // path prefix: /godmd/rest/ 12 chars
+		  console_rd = console_wr = console_pos = 0;
 		  os_sprintf(buff, "get%s\r\n", (char*)connData->url+12);
 		  uart0_tx_buffer(buff, strlen(buff));
 		  status = 200;
 	  }
-
-	  jsonHeader(connData, status);
-	  console_rd = console_wr = console_pos = 0;
+	  status = 200;
+	  noCacheHeaders(connData, status);
+	  httpdHeader(connData, "Content-Type", "application/json");
+	  httpdHeader(connData, "Access-Control-Allow-Origin", "*");
+	  httpdEndHeaders(connData);
 	  connData->cgiData = (void*) (console_rd | 0x10000); // store last read pos
 	  return HTTPD_CGI_MORE;
   } else {  // sub sequent request
-	  int start = (int)(connData->cgiData) & 0x0FFFF;
-	  int rd = (console_rd+start) % BUF_MAX;
+	  int console_rd = (int)(connData->cgiData) & 0x0FFFF;
 	  int done = 0;
 	  len = 0;
-	  while (len < 2040 && rd != console_wr) {
-	    uint8_t c = console_buf[rd];
+	  while (len < 2040 && console_rd != console_wr) {
+	    uint8_t c = console_buf[console_rd];
 	    if (c == '\r') {
 	      // this is crummy, but browsers display a newline for \r\n sequences
 	    	done= 1;
@@ -130,7 +133,7 @@ ajaxConsoleRest(HttpdConnData *connData) {
 	    } else {
 	      buff[len++] = c;
 	    }
-	    rd = (rd + 1) % BUF_MAX;
+	    console_rd = (console_rd + 1) % BUF_MAX;
 	  }
 	  if( len > 0 ) httpdSend(connData, buff, len);
 	  if( done == 0 ) {
@@ -138,6 +141,7 @@ ajaxConsoleRest(HttpdConnData *connData) {
 		  return HTTPD_CGI_MORE;
 	  }
   }
+  httpdFlush(connData);
   connData->cgiData=NULL;
   return HTTPD_CGI_DONE;
 
