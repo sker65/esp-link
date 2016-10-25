@@ -202,7 +202,9 @@ int ICACHE_FLASH_ATTR cgiMenu(HttpdConnData *connData) {
   os_strncpy(name, flashConfig.hostname, 12);
   name[12] = 0;
   // construct json response
-  os_sprintf(buff,
+  //  limit menu dependend on menu level
+  if( flashConfig.menu_level > 0)
+	 os_sprintf(buff,
     "{ "
       "\"menu\": [ "
         "\"goDMD\", \"/godmd/index.html\", "
@@ -222,7 +224,23 @@ int ICACHE_FLASH_ATTR cgiMenu(HttpdConnData *connData) {
       "\"version\": \"%s\", "
       "\"name\": \"%s\""
     " }",
-  WEB_UserPages(), esp_link_version, name);
+	WEB_UserPages(), esp_link_version, name);
+  else
+	 os_sprintf(buff,
+	"{ "
+	  "\"menu\": [ "
+		"\"goDMD\", \"/godmd/index.html\", "
+		"\"Home\", \"/home.html\", "
+		"\"WiFi Station\", \"/wifi/wifiSta.html\", "
+		"\"WiFi Soft-AP\", \"/wifi/wifiAp.html\", "
+		"\"Upgrade Firmware\", \"/flash.html\""
+	"%s"
+	  " ], "
+	  "\"version\": \"%s\", "
+	  "\"name\": \"%s\""
+	" }",
+	WEB_UserPages(), esp_link_version, name);
+
 
   httpdSend(connData, buff, -1);
   return HTTPD_CGI_DONE;
