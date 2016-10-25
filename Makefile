@@ -126,7 +126,7 @@ GZIP_COMPRESSION ?= yes
 # https://code.google.com/p/htmlcompressor/#For_Non-Java_Projects
 # http://yui.github.io/yuicompressor/
 # enabled by default.
-COMPRESS_W_HTMLCOMPRESSOR ?= yes
+COMPRESS_W_HTMLCOMPRESSOR ?= no
 HTML_COMPRESSOR ?= htmlcompressor-1.5.3.jar
 YUI_COMPRESSOR ?= yuicompressor-2.4.8.jar
 
@@ -427,6 +427,7 @@ $(BUILD_BASE)/espfs_img.o: html/ html/wifi/ html/godmd/ espfs/mkespfsimage/mkesp
 	$(Q) rm -rf html_compressed; mkdir html_compressed; mkdir html_compressed/wifi; mkdir html_compressed/godmd;
 	$(Q) cp -r html/*.ico html_compressed;
 	$(Q) cp -r html/*.css html_compressed;
+	$(Q) cp -r html/*.png html_compressed;
 	$(Q) cp -r html/*.js html_compressed;
 	$(Q) cp -r html/wifi/*.png html_compressed/wifi;
 	$(Q) cp -r html/wifi/*.js html_compressed/wifi;
