@@ -146,8 +146,11 @@ int ICACHE_FLASH_ATTR cgiServicesInfo(HttpdConnData *connData) {
 int ICACHE_FLASH_ATTR cgiServicesSet(HttpdConnData *connData) {
   if (connData->conn == NULL) return HTTPD_CGI_DONE; // Connection aborted. Clean up.
 
-  int8_t syslog = 0;
+  int8_t menu_level = 0;
+  menu_level |= getInt8Arg(connData, "menu_level", &flashConfig.menu_level);
+  if (menu_level < 0) return HTTPD_CGI_DONE;
 
+  int8_t syslog = 0;
   syslog |= getStringArg(connData, "syslog_host", flashConfig.syslog_host, sizeof(flashConfig.syslog_host));
   if (syslog < 0) return HTTPD_CGI_DONE;
   syslog |= getUInt16Arg(connData, "syslog_minheap", &flashConfig.syslog_minheap);
