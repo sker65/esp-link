@@ -126,7 +126,7 @@ GZIP_COMPRESSION ?= yes
 # https://code.google.com/p/htmlcompressor/#For_Non-Java_Projects
 # http://yui.github.io/yuicompressor/
 # enabled by default.
-COMPRESS_W_HTMLCOMPRESSOR ?= no
+COMPRESS_W_HTMLCOMPRESSOR ?= yes
 HTML_COMPRESSOR ?= htmlcompressor-1.5.3.jar
 YUI_COMPRESSOR ?= yuicompressor-2.4.8.jar
 
