@@ -58,7 +58,7 @@ var m = function(
  * More: https://gist.github.com/991057
  */
 
-var $ = function(
+var domselect = function(
   a,                         // take a simple selector like "name", "#name", or ".name", and
   b                          // an optional context, and
 ){
@@ -196,12 +196,12 @@ function ajaxJson(method, url, ok_cb, err_cb) {
 }
 
 function ajaxSpin(method, url, ok_cb, err_cb) {
-  $("#spinner").removeAttribute('hidden');
+  domselect("#spinner").removeAttribute('hidden');
   ajaxReq(method, url, function(resp) {
-      $("#spinner").setAttribute('hidden', '');
+      domselect("#spinner").setAttribute('hidden', '');
       ok_cb(resp);
     }, function(status, statusText) {
-      $("#spinner").setAttribute('hidden', '');
+      domselect("#spinner").setAttribute('hidden', '');
       //showWarning("Error: " + statusText);
       err_cb(status, statusText);
     });
@@ -219,7 +219,7 @@ function hidePopup(el) {
 }
 
 onLoad(function() {
-  var l = $("#layout");
+  var l = domselect("#layout");
   var o = l.childNodes[0];
   // spinner
   l.insertBefore(m('<div id="spinner" class="spinner" hidden></div>'), o);
@@ -232,8 +232,8 @@ onLoad(function() {
   var mm = m(
    '<div id="menu">\
       <div class="pure-menu">\
-        <a class="pure-menu-heading" href="https://github.com/jeelabs/esp-link">\
-        <img src="/favicon.ico" height="32">&nbsp;esp-link</a>\
+        <a class="pure-menu-heading" href="http://go-dmd.de/">\
+        <img src="/godmd.png" height="32"></a>\
         <div class="pure-menu-heading system-name" style="padding: 0px 0.6em"></div>\
         <ul id="menu-list" class="pure-menu-list"></ul>\
       </div>\
@@ -242,7 +242,7 @@ onLoad(function() {
   l.insertBefore(mm, o);
 
   // make hamburger button pull out menu
-  var ml = $('#menuLink'), mm = $('#menu');
+  var ml = domselect('#menuLink'), mm = domselect('#menu');
   bnd(ml, 'click', function (e) {
 //    console.log("hamburger time");
       var active = 'active';
@@ -253,7 +253,7 @@ onLoad(function() {
   });
 
   // hide pop-ups
-  domForEach($(".popup"), function(el) {
+  domForEach(domselect(".popup"), function(el) {
     hidePopup(el);
   });
 
@@ -268,12 +268,12 @@ onLoad(function() {
             "<a href=\"" + href + "\" class=\"pure-menu-link\">" +
             data.menu[i] + "</a></li>");
       }
-      $("#menu-list").innerHTML = html;
+      domselect("#menu-list").innerHTML = html;
 
-      var v = $("#version");
+      var v = domselect("#version");
       if (v != null) { v.innerHTML = data.version; }
 
-      $('title')[0].innerHTML = data["name"];
+      domselect('title')[0].innerHTML = data["name"];
       setEditToClick("system-name", data["name"]);
     }, function() { setTimeout(getMenu, 1000); });
   };
@@ -284,16 +284,16 @@ onLoad(function() {
 
 function showWifiInfo(data) {
   Object.keys(data).forEach(function(v) {
-    el = $("#wifi-" + v);
+    el = domselect("#wifi-" + v);
     if (el != null) {
       if (el.nodeName === "INPUT") el.value = data[v];
       else el.innerHTML = data[v];
     }
   });
-  var dhcp = $('#dhcp-r'+data.dhcp);
+  var dhcp = domselect('#dhcp-r'+data.dhcp);
   if (dhcp) dhcp.click();
-  $("#wifi-spinner").setAttribute("hidden", "");
-  $("#wifi-table").removeAttribute("hidden");
+  domselect("#wifi-spinner").setAttribute("hidden", "");
+  domselect("#wifi-table").removeAttribute("hidden");
   currAp = data.ssid;
 }
 
@@ -308,8 +308,8 @@ function showSystemInfo(data) {
   Object.keys(data).forEach(function(v) {
     setEditToClick("system-"+v, data[v]);
   });
-  $("#system-spinner").setAttribute("hidden", "");
-  $("#system-table").removeAttribute("hidden");
+  domselect("#system-spinner").setAttribute("hidden", "");
+  domselect("#system-table").removeAttribute("hidden");
   currAp = data.ssid;
 }
 
@@ -319,9 +319,9 @@ function getSystemInfo() {
 }
 
 function makeAjaxInput(klass, field) {
-  domForEach($("."+klass+"-"+field), function(div) {
-    var eon = $(".edit-on", div);
-    var eoff = $(".edit-off", div)[0];
+  domForEach(domselect("."+klass+"-"+field), function(div) {
+    var eon = domselect(".edit-on", div);
+    var eoff = domselect(".edit-off", div)[0];
     var url = "/"+klass+"/update?"+field;
 
     if (eoff === undefined || eon == undefined) return;
@@ -355,7 +355,7 @@ function makeAjaxInput(klass, field) {
 }
 
 function setEditToClick(klass, value) {
-  domForEach($("."+klass), function(div) {
+  domForEach(domselect("."+klass), function(div) {
     if (div.children.length > 0) {
       domForEach(div.children, function(el) {
         if (el.nodeName === "INPUT") el.value = value;
@@ -370,17 +370,17 @@ function setEditToClick(klass, value) {
 //===== Notifications
 
 function showWarning(text) {
-  var el = $("#warning");
+  var el = domselect("#warning");
   el.innerHTML = text;
   el.removeAttribute('hidden');
   window.scrollTo(0, 0);
 }
 function hideWarning() {
-  el = $("#warning").setAttribute('hidden', '');
+  el = domselect("#warning").setAttribute('hidden', '');
 }
 var notifTimeout = null;
 function showNotification(text) {
-  var el = $("#notification");
+  var el = domselect("#notification");
   el.innerHTML = text;
   el.removeAttribute('hidden');
   if (notifTimeout != null) clearTimeout(notifTimeout);
@@ -411,13 +411,13 @@ function createPresets(sel) {
     var pp = pinPresets[v];
     if (pp === undefined) return pp;
 //    console.log("apply preset:", v, pp);
-    function setPP(k, v) { $("#pin-"+k).value = v; };
+    function setPP(k, v) { domselect("#pin-"+k).value = v; };
     setPP("reset", pp[0]);
     setPP("isp",   pp[1]);
     setPP("conn",  pp[2]);
     setPP("ser",   pp[3]);
     setPP("swap",  pp[4]);
-    $("#pin-rxpup").checked = !!pp[5];
+    domselect("#pin-rxpup").checked = !!pp[5];
     sel.value = 0;
   };
 
@@ -429,7 +429,7 @@ function createPresets(sel) {
 
 function displayPins(resp) {
   function createSelectForPin(name, v) {
-    var sel = $("#pin-"+name);
+    var sel = domselect("#pin-"+name);
     addClass(sel, "pure-button");
     sel.innerHTML = "";
     [-1,0,1,2,3,4,5,12,13,14,15].forEach(function(i) {
@@ -443,7 +443,7 @@ function displayPins(resp) {
       if (i==v) opt.selected = true;
       sel.appendChild(opt);
     });
-    var pup = $(".popup", sel.parentNode);
+    var pup = domselect(".popup", sel.parentNode);
     if (pup !== undefined) hidePopup(pup[0]);
   };
 
@@ -451,12 +451,12 @@ function displayPins(resp) {
   createSelectForPin("isp", resp["isp"]);
   createSelectForPin("conn", resp["conn"]);
   createSelectForPin("ser", resp["ser"]);
-  $("#pin-swap").value = resp["swap"];
-  $("#pin-rxpup").checked = !!resp["rxpup"];
-  createPresets($("#pin-preset"));
+  domselect("#pin-swap").value = resp["swap"];
+  domselect("#pin-rxpup").checked = !!resp["rxpup"];
+  createPresets(domselect("#pin-preset"));
 
-  $("#pin-spinner").setAttribute("hidden", "");
-  $("#pin-table").removeAttribute("hidden");
+  domselect("#pin-spinner").setAttribute("hidden", "");
+  domselect("#pin-table").removeAttribute("hidden");
 }
 
 function fetchPins() {
@@ -470,10 +470,10 @@ function setPins(ev) {
   var url = "/pins";
   var sep = "?";
   ["reset", "isp", "conn", "ser", "swap"].forEach(function(p) {
-    url += sep + p + "=" + $("#pin-"+p).value;
+    url += sep + p + "=" + domselect("#pin-"+p).value;
     sep = "&";
   });
-  url += "&rxpup=" + ($("#pin-rxpup").checked ? "1" : "0");
+  url += "&rxpup=" + (domselect("#pin-rxpup").checked ? "1" : "0");
 //  console.log("set pins: " + url);
   ajaxSpin("POST", url, function() {
     showNotification("Pin assignment changed");

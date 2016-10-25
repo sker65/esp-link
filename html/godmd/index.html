@@ -1,68 +1,306 @@
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
+<script src="/userpage.js"></script>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+	$("select").change( function() {
+		notifyButtonPressed( $(this).attr("id") + "_" + $(this).val() );
+	});
+	$("#mo_1").change( function() {
+		notifyButtonPressed( $(this).attr("id") + "_" + $(this).val() );
+	});
+});
+
+function menuLevel( level ) {
+	var url = "/services/update?1=1&menu_level="+level;
+  ajaxSpin("POST", url, function (resp) {
+    showNotification("menu level updated");
+    //removeClass(cb, "pure-button-disabled");
+    window.setTimeout( location.reload(), 1000 );
+  }, function (s, st) {
+    showWarning("Error: " + st);
+    //removeClass(cb, "pure-button-disabled");
+    //window.setTimeout(fetchServices, 100);
+  });
+
+}
+</script>
   <div id="main">
     <div class="header">
-        <h1>goDMD - Config</h1>
+        <h1>goDMD - Config <span style="font-size: 16px;">Firmware: <span id="firmversion"></span></span></h1>
     </div>
 
     <div class="content">
+<style>
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btnRed {background-color: #FF0000;}
+.btnGreen {background-color: #00FF00;color: black;}
+.btnBlue {background-color: #0000FF;}
+.btnTeal {background-color: #00FFFF;color: black;}
+.btnYellow {background-color: #FFFF00;color: black;}
+.btnPink {background-color: #FF00FF;}
+.btnOrange {background-color: #FF9900;}
+.btnMidBlue {background-color: #0099FF;}
+.btnRnd {border: 2px solid #000000; background-color: #FFFFFF; color: black;}
+
+</style>
       <div class="pure-g">
         <div class="pure-u-1 pure-u-md-1-2">
-          <div class="card">
-            <h1>
-              Clock <div id="clock-spinner" class="spinner spinner-small"></div>
-            </h1>
-            <div>
-            <form action="#" id="clock-form" class="pure-form">
-              <div class="pure-form-stacked">
-                <label>Set time</label>
-                <input type="text" name="time" />
-                <div class="popup">Input time in format HH:MM:SS.</div>
-              </div>
-            </form>
+			<div class="card">
+				<h2>Clock</h2>
+				<b class="col-sm-3">Color:</b>
+				<!-- div class="btn-group col-sm-9" role="group" aria-label="..."-->
+				<div class="col-sm-9">
+				<button type="button" id="btn_clock_col_0" class="btn btnRed">Red</button>
+				<button type="button" id="btn_clock_col_1" class="btn btnGreen">Green</button>
+				<button type="button" id="btn_clock_col_2" class="btn btnBlue">Blue</button>
+				<button type="button" id="btn_clock_col_3" class="btn btnTeal">Teal</button>
+				<button type="button" id="btn_clock_col_4" class="btn btnYellow">Yellow</button>
+				<button type="button" id="btn_clock_col_5" class="btn btnPink">Pink</button>
+				<button type="button" id="btn_clock_col_6" class="btn btnOrange">Orange</button>
+				<button type="button" id="btn_clock_col_7" class="btn btnMidBlue">MidBlue</button>
+				<button type="button" id="btn_clock_col_rnd" class="btn btn-default">Random</button>
+				</div>
+				<br/><b class="col-sm-3">Mode:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_8_0" class="mo_8 btn btn-default">HH:MM</button>
+  					<button type="button" id="mo_8_1" class="mo_8 btn btn-default">HH:MM:SS</button>
+				</div>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_17_0" class="mo_17 btn btn-default">24H</button>
+  					<button type="button" id="mo_17_1" class="mo_17 btn btn-default">12H</button>
+				</div>
+				<br/><b class="col-sm-3" data-toggle="tooltip" title="Controls whether the colons are blinking">Tick:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_16_1" class="mo_16 btn btn-default">off</button>
+  					<button type="button" id="mo_16_0" class="mo_16 btn btn-default">on</button>
+				</div>
+				<br/><b class="col-sm-3" data-toggle="tooltip" title="Controls whether time display moves in from the borders (only for animations with no transition)">Intro-Ani:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_30_0" class="mo_30 btn btn-default">off</button>
+  					<button type="button" id="mo_30_1" class="mo_30 btn btn-default">on</button>
+				</div>
+				<br/><b class="col-sm-3">Timezone:</b>
+      				<select class="form-control" style="width: 5em; display: inline-block;" id="mo_32">
+     				   	<option>-11</option>
+        				<option>-10</option>
+        				<option>-9</option>
+        				<option>-8</option>
+     				   	<option>-7</option>
+        				<option>-6</option>
+        				<option>-5</option>
+        				<option>-4</option>
+     				   	<option>-3</option>
+        				<option>-2</option>
+        				<option>-1</option>
+        				<option>0</option>
+     				   	<option>1</option>
+        				<option>2</option>
+        				<option>3</option>
+        				<option>4</option>
+     				   	<option>5</option>
+        				<option>6</option>
+        				<option>7</option>
+        				<option>8</option>
+     				   	<option>9</option>
+        				<option>10</option>
+        				<option>11</option>
+        				<option>12</option>
+      				</select>
+				<br/><b class="col-sm-3">Font:</b>
+      				<select class="form-control" style="width: 12em; display: inline-block;" id="mo_19">
+						<option value="0">Alarm clock</option>
+						<option value="1">Arcena</option>
+						<option value="2">Aressence</option>
+						<option value="3">Arjulian</option>
+						<option value="4">Asimov</option>
+						<option value="5">Big</option>
+						<option value="6">Butch</option>
+						<option value="7">Calli</option>
+						<option value="8">Digital</option>
+						<option value="9">GraphiCat</option>
+						<option value="10">Makushka 1</option>
+						<option value="11">Makushka 2</option>
+						<option value="12">Mrs Monster</option>
+						<option value="13">R&uuml;ck</option>
+						<option value="14">R&uuml;ck hollow</option>
+						<option value="15">Ticketing</option>
+						<option value="16">Asimov red-orange</option>
+						<option value="17">Asimov blue-green</option>
+						<option value="18">R&uuml;ck blue-red</option>
+						<option value="19">R&uuml;ck small</option>
+      				</select>
+				<br/><b class="col-sm-3" data-toggle="tooltip" title="Controls whether font face is fixed are blinking">Font Mode:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_28_0" class="mo_28 btn btn-default">Fixed</button>
+  					<button type="button" id="mo_28_1" class="mo_28 btn btn-default">Random</button>
+				</div>
+			</div>
+			<div class="card">
+				<h2>Animation</h2>
+				<b class="col-sm-3">Color:</b>
+				<div class="col-sm-9">
+				<button type="button" id="btn_ani_col_0" class="btn btnRed">Red</button>
+				<button type="button" id="btn_ani_col_1" class="btn btnGreen">Green</button>
+				<button type="button" id="btn_ani_col_2" class="btn btnBlue">Blue</button>
+				<button type="button" id="btn_ani_col_3" class="btn btnTeal">Teal</button>
+				<button type="button" id="btn_ani_col_4" class="btn btnYellow">Yellow</button>
+				<button type="button" id="btn_ani_col_5" class="btn btnPink">Pink</button>
+				<button type="button" id="btn_ani_col_6" class="btn btnOrange">Orange</button>
+				<button type="button" id="btn_ani_col_7" class="btn btnMidBlue">MidBlue</button>
+				<button type="button" id="btn_ani_col_rnd" class="btn btn-default">Random</button>
+				</div>
+				<br/><b class="col-sm-3" data-toggle="tooltip" title="Controls playing order of animations. For v1 animations random playing starts after first cycle">Order:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_18_0" class="mo_18 btn btn-default">Fixed</button>
+  					<button type="button" id="mo_18_1" class="mo_18 btn btn-default">Random</button>
+				</div>
+				<br/><b class="col-sm-3">PEG:</b>
+      				<select class="form-control" style="width: 5em; display: inline-block;" id="mo_15">
+     				   	<option value="0">18</option>
+        				<option value="1">16</option>
+        				<option value="2">12</option>
+        				<option value="3">6</option>
+      				</select>
+			</div>
+		</div>
+        <div class="pure-u-1 pure-u-md-1-2">
+			<div class="card">
+				<h2>Display</h2>
+				<b class="col-sm-4">Brightness:</b><input id="mo_1" style="width: 15em; display: inline-block;" type="range" name="frequency" min="2" max="20"><br/>
+				<br/><b class="col-sm-4">Duration Clock:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_9_5" class="mo_9 btn btn-default">5</button>
+  					<button type="button" id="mo_9_10" class="mo_9 btn btn-default">10</button>
+  					<button type="button" id="mo_9_15" class="mo_9 btn btn-default">15</button>
+  					<button type="button" id="mo_9_20" class="mo_9 btn btn-default">20</button>
+				</div> sec.
+				<br/><b class="col-sm-4">Interval Date:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_10_0" class="mo_10 btn btn-default">off</button>
+  					<button type="button" id="mo_10_5" class="mo_10 btn btn-default">5</button>
+  					<button type="button" id="mo_10_10" class="mo_10 btn btn-default">10</button>
+  					<button type="button" id="mo_10_20" class="mo_10 btn btn-default">20</button>
+  					<button type="button" id="mo_10_60" class="mo_10 btn btn-default">60</button>
+				</div> sec.
+				<br/><b class="col-sm-4">Interval Temp:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_13_0" class="mo_13 btn btn-default">off</button>
+  					<button type="button" id="mo_13_5" class="mo_13 btn btn-default">5</button>
+  					<button type="button" id="mo_13_10" class="mo_13 btn btn-default">10</button>
+  					<button type="button" id="mo_13_20" class="mo_13 btn btn-default">20</button>
+  					<button type="button" id="mo_13_60" class="mo_13 btn btn-default">60</button>
+				</div> sec.
+				<br/><b class="col-sm-4">Interval Humidity:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_24_0" class="mo_24 btn btn-default">off</button>
+  					<button type="button" id="mo_24_5" class="mo_24 btn btn-default">5</button>
+  					<button type="button" id="mo_24_10" class="mo_24 btn btn-default">10</button>
+  					<button type="button" id="mo_24_20" class="mo_24 btn btn-default">20</button>
+  					<button type="button" id="mo_24_60" class="mo_24 btn btn-default">60</button>
+				</div> sec.
+			</div>
+			<div class="card">
+				<h2>Misc</h2>
+				<b class="col-sm-4" data-toggle="tooltip" title="If on IR commands are indicated by a small dot top left">LED Ind.:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_20_0" class="mo_20 btn btn-default">off</button>
+  					<button type="button" id="mo_20_1" class="mo_20 btn btn-default">on</button>
+				</div>
+				<br/><b class="col-sm-4">PIR Mode:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_14_0" class="mo_14 btn btn-default">inactive</button>
+  					<button type="button" id="mo_14_1" class="mo_14 btn btn-default">dim</button>
+  					<button type="button" id="mo_14_2" class="mo_14 btn btn-default">no anim</button>
+  					<button type="button" id="mo_14_3" class="mo_14 btn btn-default">switch off</button>
+				</div>
+				<br/><b class="col-sm-4" data-toggle="tooltip" title="If on the name of the animation is displayed (only for testing)">Display Name:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_22_0" class="mo_22 btn btn-default">off</button>
+  					<button type="button" id="mo_22_1" class="mo_22 btn btn-default">on</button>
+				</div>
+				<br/><b class="col-sm-4" data-toggle="tooltip" title="If on most boot messages and boot logo are skipped">Fastboot:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_29_0" class="mo_29 btn btn-default">off</button>
+  					<button type="button" id="mo_29_1" class="mo_29 btn btn-default">on</button>
+				</div>
+				<br/><b class="col-sm-4"data-toggle="tooltip" title="Adjust offset of temperatur sensor">Temp-Offset:</b>
+      				<select class="form-control" style="width: 5em; display: inline-block;" id="mo_23">
+     				   	<option>-10</option>
+     				   	<option>-9</option>
+     				   	<option>-8</option>
+     				   	<option>-7</option>
+     				   	<option>-6</option>
+        				<option>-5</option>
+        				<option>-4</option>
+        				<option>-3</option>
+     				   	<option>-2</option>
+        				<option>-1</option>
+        				<option>0</option>
+        				<option>1</option>
+        				<option>2</option>
+        				<option>3</option>
+        				<option>4</option>
+        				<option>5</option>
+        				<option>6</option>
+        				<option>7</option>
+        				<option>8</option>
+        				<option>9</option>
+        				<option>10</option>
+      				</select>
+				<br/><b class="col-sm-4" data-toggle="tooltip" title="changes the com port, that the wifi interface is attached to. Use with care, if not correct wifi gets unusable">COM Serial:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_31_1" class="mo_31 btn btn-default">B10/11</button>
+  					<button type="button" id="mo_31_0" class="mo_31 btn btn-default">C10/11</button>
+				</div>
+				<br/><b class="col-sm-4">Menu Level (Web):</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button class="btn btn-default" onClick="menuLevel(0);">Simple</button>
+  					<button class="btn btn-default" onClick="menuLevel(1);">Expert</button>
+				</div>
+				<br/><br/><div class="col-sm-4">&nbsp;</div><button type="button" id="btn_reset" class="button btnRnd">Reset goDMD</button>
+			</div>
+		</div>
+        <div class="pure-u-1 pure-u-md-1-2">
+			<div class="card">
+            <h1>Info & Credits</h1>
+            <p style="margin-bottom:0;">
+            This configuration UI is based on the excellent work of jeelabs esp-link (see below). Many thanks to the great team around Thorsten
+            von Eicken.
+            </p>
+            <p style="margin-bottom:0;">
+            goDMD is inspired from run-dmd and the <a href="http://forum.arcadeotaku.com/viewtopic.php?f=17&t=29457">work of Torbj&ouml;rn</a>.
+            I also got lots of support from the german flippermarkt forum, especially <b>Rappelbox</b> and <b>Gbausm</b>, and of course to <b>Lucky1</b>.
+            </p>
+            <p>There is also many content contribution from the virtual pinball community namely <b>Toxi</b> did a lot of work with vpinmame.
+            </p><p>
+            The JeeLabs esp-link firmware bridges the ESP8266 serial port to WiFi and can
+            program microcontrollers over the serial port, in particular Arduinos, AVRs, and
+            NXP's LPC800 and other ARM processors.
+            Please refer to <a href="https://github.com/jeelabs/esp-link/blob/master/README.md">the online README</a>
+            for up-to-date help.</p>
           </div>
         </div>
-      </div>
+	  </div>
     </div>
   </div>
 
 </div>
 
-<script type="text/javascript">
-
-function configClock(e) {
-  e.preventDefault();
-  var url = "godmd/rest?1=1";
-  var i, inputs = document.querySelectorAll("#" + e.target.id + " input,select");
-  for (i = 0; i < inputs.length; i++) {
-    if (inputs[i].type == "checkbox") {
-      if (inputs[i].name.slice(-6) == "enable")
-        continue;
-      var val = (inputs[i].checked) ? 1 : 0;
-      url += "&" + inputs[i].name + "=" + val;
-    }
-    else
-      url += "&" + inputs[i].name + "=" + inputs[i].value;
-  };
-
-  hideWarning();
-  var n = e.target.id.replace("-form", "");
-  var cb = $("#" + n + "-button");
-  addClass(cb, "pure-button-disabled");
-  ajaxSpin("POST", url, function (resp) {
-    showNotification(n + " updated");
-    removeClass(cb, "pure-button-disabled");
-  }, function (s, st) {
-    showWarning("Error: " + st);
-    removeClass(cb, "pure-button-disabled");
-    //window.setTimeout(fetchServices, 100);
-  });
-
-}
-
-onLoad(function() {
-  fetchServices();
-  bnd($("#clock-form"), "submit", configClock);
-
-  $("#clock-spinner").setAttribute("hidden", "");
-});
-</script>
 </body></html>

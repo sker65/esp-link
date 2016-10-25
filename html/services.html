@@ -15,7 +15,7 @@
               <div class="pure-form-stacked">
                 <label>Syslog Host</label>
                 <input type="text" name="syslog_host" />
-                <div class="popup">Esp-link sends event/debug info to this syslog host 
+                <div class="popup">Esp-link sends event/debug info to this syslog host
                   (hostname:port). Leave empty to disable syslog.</div>
               </div>
               <div class="pure-form-stacked">
@@ -102,7 +102,6 @@
               </button>
             </form>
           </div>
-        </div>
       </div>
     </div>
   </div>
@@ -112,9 +111,9 @@
 <script type="text/javascript">
 onLoad(function() {
   fetchServices();
-  bnd($("#Syslog-form"), "submit", changeServices);
-  bnd($("#SNTP-form"), "submit", changeServices);
-  bnd($("#mDNS-form"), "submit", changeServices);
+  bnd(domselect("#Syslog-form"), "submit", changeServices);
+  bnd(domselect("#SNTP-form"), "submit", changeServices);
+  bnd(domselect("#mDNS-form"), "submit", changeServices);
 });
 </script>
 </body></html>

@@ -43,6 +43,13 @@ function notifyResponse( data )
     var elem = document.getElementById(v);
     if( elem != null )
     {
+      if(elem.tagName == "INPUT" && elem.type == "range" ) {
+      	elem.value = data[v];
+      }
+      if(elem.tagName == "SELECT")
+      {
+        elem.value = data[v];
+      }
       if(elem.tagName == "P" || elem.tagName == "DIV" || elem.tagName == "SPAN" || elem.tagName == "TR" || elem.tagName == "TH" || elem.tagName == "TD" ||
          elem.tagName == "TEXTAREA" )
       {
@@ -89,6 +96,9 @@ function notifyResponse( data )
         
         elem.innerHTML = html;
       }
+    } else {
+      	$("."+v).removeClass("btn-primary");
+ 		$("#"+v+'_'+data[v]).addClass("btn-primary");
     }
   });
   

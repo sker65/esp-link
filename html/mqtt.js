@@ -10,7 +10,7 @@ function changeMqtt(e) {
   };
 
   hideWarning();
-  var cb = $("#mqtt-button");
+  var cb = domselect("#mqtt-button");
   addClass(cb, 'pure-button-disabled');
   ajaxSpin("POST", url, function (resp) {
     showNotification("MQTT updated");
@@ -24,7 +24,7 @@ function changeMqtt(e) {
 
 function displayMqtt(data) {
   Object.keys(data).forEach(function (v) {
-    el = $("#" + v);
+    el = domselect("#" + v);
     if (el != null) {
       if (el.nodeName === "INPUT") el.value = data[v];
       else el.innerHTML = data[v];
@@ -36,10 +36,10 @@ function displayMqtt(data) {
       else el.value = data[v];
     }
   });
-  $("#mqtt-spinner").setAttribute("hidden", "");
-  $("#mqtt-status-spinner").setAttribute("hidden", "");
-  $("#mqtt-form").removeAttribute("hidden");
-  $("#mqtt-status-form").removeAttribute("hidden");
+  domselect("#mqtt-spinner").setAttribute("hidden", "");
+  domselect("#mqtt-status-spinner").setAttribute("hidden", "");
+  domselect("#mqtt-form").removeAttribute("hidden");
+  domselect("#mqtt-status-form").removeAttribute("hidden");
 
   var i, inputs = $("input");
   for (i = 0; i < inputs.length; i++) {

@@ -30,14 +30,14 @@
   onLoad(function() {
     fetchText(100, false);
 
-    $("#refresh-button").addEventListener("click", function(e) {
+    domselect("#refresh-button").addEventListener("click", function(e) {
       e.preventDefault();
       fetchText(100, false);
     });
 
-    $("#reset-button").addEventListener("click", function (e) {
+    domselect("#reset-button").addEventListener("click", function (e) {
         e.preventDefault();
-        var co = $("#console");
+        var co = domselect("#console");
         co.innerHTML = "";
         ajaxSpin('POST', "/log/reset",
           function (resp) { showNotification("Resetting esp-link"); co.textEnd = 0; fetchText(2000, false); },
@@ -46,7 +46,7 @@
     });
 
     ["auto", "off", "on0", "on1"].forEach(function(mode) {
-      bnd($('#dbg-'+mode), "click", function(el) {
+      bnd(domselect('#dbg-'+mode), "click", function(el) {
         ajaxJsonSpin('POST', "/log/dbg?mode="+mode,
           function(data) { showNotification("UART mode " + data.mode); showDbgMode(data.mode); },
           function(s, st) { showWarning("Error setting UART mode: " + st); }

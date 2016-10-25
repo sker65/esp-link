@@ -1,7 +1,7 @@
 //===== Fetching console text
 
 function fetchText(delay, repeat) {
-  var el = $("#console");
+  var el = domselect("#console");
   if (el.textEnd == undefined) {
     el.textEnd = 0;
     el.innerHTML = "";
@@ -17,7 +17,7 @@ function fetchText(delay, repeat) {
 }
 
 function updateText(resp) {
-  var el = $("#console");
+  var el = domselect("#console");
 
   var delay = 3000;
   if (resp != null && resp.len > 0) {
@@ -52,10 +52,10 @@ function retryLoad(repeat) {
 //===== Text entry
 
 function consoleSendInit() {
-  var sendHistory = $("#send-history");
-  var inputText = $("#input-text");
-  var inputAddCr = $("#input-add-cr");
-  var inputAddLf = $("#input-add-lf");
+  var sendHistory = domselect("#send-history");
+  var inputText = domselect("#input-text");
+  var inputAddCr = domselect("#input-add-cr");
+  var inputAddLf = domselect("#input-add-lf");
 
   function findHistory(text) {
     for (var i = 0; i < sendHistory.children.length; i++) {
@@ -142,7 +142,7 @@ function consoleSendInit() {
 //===== Log page
 
 function showDbgMode(mode) {
-  var btns = $('.dbg-btn');
+  var btns = domselect('.dbg-btn');
   for (var i=0; i < btns.length; i++) {
     if (btns[i].id === "dbg-"+mode)
       addClass(btns[i], "button-selected");

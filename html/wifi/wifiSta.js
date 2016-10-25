@@ -43,7 +43,7 @@ function getSelectedEssid() {
   for (var i=0; i<e.length; i++) {
     if (e[i].type == "radio" && e[i].checked) {
       var v = e[i].value;
-      if (v == "_hidden_ssid_") v = $("#hidden-ssid").value;
+      if (v == "_hidden_ssid_") v = domselect("#hidden-ssid").value;
       return v;
     }
   }
@@ -61,15 +61,15 @@ function scanResult() {
   ajaxJson('GET', "scan", function(data) {
       currAp = getSelectedEssid();
       if (data.result.inProgress == "0" && data.result.APs.length > 0) {
-        $("#aps").innerHTML = "";
+        domselect("#aps").innerHTML = "";
         var n = 0;
         for (var i=0; i<data.result.APs.length; i++) {
           if (data.result.APs[i].essid == "" && data.result.APs[i].rssi == 0) continue;
-          $("#aps").appendChild(createInputForAp(data.result.APs[i]));
+          domselect("#aps").appendChild(createInputForAp(data.result.APs[i]));
           n = n+1;
         }
         showNotification("Scan found " + n + " networks");
-        var cb = $("#connect-button");
+        var cb = domselect("#connect-button");
         cb.className = cb.className.replace(" pure-button-disabled", "");
         if (scanTimeout != null) clearTimeout(scanTimeout);
         scanTimeout = window.setTimeout(scanAPs, 20000);
@@ -101,7 +101,7 @@ function scanAPs() {
 function getStatus() {
   ajaxJsonSpin("GET", "connstatus", function(data) {
       if (data.status == "idle" || data.status == "connecting") {
-        $("#aps").innerHTML = "Connecting...";
+        domselect("#aps").innerHTML = "Connecting...";
         showNotification("Connecting...");
         window.setTimeout(getStatus, 1000);
       } else if (data.status == "got IP address") {
@@ -115,14 +115,14 @@ function getStatus() {
     window.setTimeout(function() { showNotification(txt2); }, 4000);
   }
 
-        $("#reconnect").removeAttribute("hidden");
-        $("#reconnect").innerHTML =
+        domselect("#reconnect").removeAttribute("hidden");
+        domselect("#reconnect").innerHTML =
           "If you are in the same network, go to <a href=\"http://"+data.ip+
           "/\">"+data.ip+"</a>, else connect to network "+data.ssid+" first.";
       } else {
         blockScan = 0;
         showWarning("Connection failed: " + data.status + ", " + data.reason);
-        $("#aps").innerHTML =
+        domselect("#aps").innerHTML =
           "Check password and selected AP. <a href=\"wifi.tpl\">Go Back</a>";
       }
     }, function(s, st) {
@@ -147,20 +147,20 @@ function changeWifiMode(m) {
 
 function changeWifiAp(e) {
   e.preventDefault();
-  var passwd = $("#wifi-passwd").value;
+  var passwd = domselect("#wifi-passwd").value;
   var essid = getSelectedEssid();
   showNotification("Connecting to " + essid);
   var url = "connect?essid="+encodeURIComponent(essid)+"&passwd="+encodeURIComponent(passwd);
 
   hideWarning();
-  $("#reconnect").setAttribute("hidden", "");
-  $("#wifi-passwd").value = "";
-  var cb = $("#connect-button");
+  domselect("#reconnect").setAttribute("hidden", "");
+  domselect("#wifi-passwd").value = "";
+  var cb = domselect("#connect-button");
   var cn = cb.className;
   cb.className += ' pure-button-disabled';
   blockScan = 1;
   ajaxSpin("POST", url, function(resp) {
-      $("#spinner").removeAttribute('hidden'); // hack
+      domselect("#spinner").removeAttribute('hidden'); // hack
       showNotification("Waiting for network change...");
       window.scrollTo(0, 0);
       window.setTimeout(getStatus, 2000);
@@ -175,12 +175,12 @@ function changeSpecial(e) {
   e.preventDefault();
   var url = "special";
   url += "?dhcp=" + document.querySelector('input[name="dhcp"]:checked').value;
-  url += "&staticip=" + encodeURIComponent($("#wifi-staticip").value);
-  url += "&netmask=" + encodeURIComponent($("#wifi-netmask").value);
-  url += "&gateway=" + encodeURIComponent($("#wifi-gateway").value);
+  url += "&staticip=" + encodeURIComponent(domselect("#wifi-staticip").value);
+  url += "&netmask=" + encodeURIComponent(domselect("#wifi-netmask").value);
+  url += "&gateway=" + encodeURIComponent(domselect("#wifi-gateway").value);
 
   hideWarning();
-  var cb = $("#special-button");
+  var cb = domselect("#special-button");
   addClass(cb, 'pure-button-disabled');
   ajaxSpin("POST", url, function(resp) {
       removeClass(cb, 'pure-button-disabled');
@@ -193,11 +193,11 @@ function changeSpecial(e) {
 }
 
 function doDhcp() {
-  $('#dhcp-on').removeAttribute('hidden');
-  $('#dhcp-off').setAttribute('hidden', '');
+  domselect('#dhcp-on').removeAttribute('hidden');
+  domselect('#dhcp-off').setAttribute('hidden', '');
 }
 
 function doStatic() {
-  $('#dhcp-off').removeAttribute('hidden');
-  $('#dhcp-on').setAttribute('hidden', '');
+  domselect('#dhcp-off').removeAttribute('hidden');
+  domselect('#dhcp-on').setAttribute('hidden', '');
 }

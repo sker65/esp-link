@@ -186,7 +186,7 @@ div.tt {
 .content {
   margin: 0 auto;
   padding: 0 2em;
-  max-width: 800px;
+  /*max-width: 800px;*/
   margin-bottom: 20px;
   line-height: 1.6em;
   width: 100%;
@@ -392,12 +392,12 @@ pre.console a {
 
 .menu-link {
   position: fixed;
-  display: block; 
+  display: block;
   top: 0;
-  left: 0; 
+  left: 0;
   background: #000;
   background: rgba(0,0,0,0.7);
-  font-size: 10px; 
+  font-size: 10px;
   z-index: 10;
   width: 2em;
   height: auto;

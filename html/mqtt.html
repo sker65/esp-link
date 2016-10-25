@@ -11,7 +11,7 @@
           The REST support lets the uC initiate simple HTTP requests while the MQTT support
           lets it communicate with an MQTT server bidirectionally at QoS 0 thru 2.</p>
           <p>The MQTT support is in the form of a built-in client that connects to a server
-          using parameters set below and stored in esp-link's flash settings. This allows 
+          using parameters set below and stored in esp-link's flash settings. This allows
           esp-link to take care of connection parameters and disconnect/reconnect operations.</p>
           <p>The MQTT client also supports sending periodic status messages about esp-link itself,
           including WiFi RSSI, and free heap memory.</p>
@@ -97,8 +97,8 @@
 <script type="text/javascript">
 onLoad(function() {
   fetchMqtt();
-  bnd($("#mqtt-form"), "submit", changeMqtt);
-  bnd($("#mqtt-status-form"), "submit", changeMqttStatus);
+  bnd(domselect("#mqtt-form"), "submit", changeMqtt);
+  bnd(domselect("#mqtt-status-form"), "submit", changeMqttStatus);
 });
 </script>
 </body></html>

@@ -15,7 +15,7 @@ function changeServices(e) {
 
   hideWarning();
   var n = e.target.id.replace("-form", "");
-  var cb = $("#" + n + "-button");
+  var cb = domselect("#" + n + "-button");
   addClass(cb, "pure-button-disabled");
   ajaxSpin("POST", url, function (resp) {
     showNotification(n + " updated");
@@ -29,7 +29,7 @@ function changeServices(e) {
 
 function displayServices(data) {
   Object.keys(data).forEach(function (v) {
-    el = $("#" + v);
+    el = domselect("#" + v);
     if (el != null) {
       if (el.nodeName === "INPUT") el.value = data[v];
       else el.innerHTML = data[v];
@@ -47,20 +47,20 @@ function displayServices(data) {
     }
   });
 
-  $("#syslog-spinner").setAttribute("hidden", "");
-  $("#sntp-spinner").setAttribute("hidden", "");
-  $("#mdns-spinner").setAttribute("hidden", "");
+  domselect("#syslog-spinner").setAttribute("hidden", "");
+  domselect("#sntp-spinner").setAttribute("hidden", "");
+  domselect("#mdns-spinner").setAttribute("hidden", "");
 
   if (data.syslog_host !== undefined) {
-    $("#Syslog-form").removeAttribute("hidden");
+    domselect("#Syslog-form").removeAttribute("hidden");
   } else {
     // syslog disabled...
-    $("#Syslog-form").parentNode.setAttribute("hidden", "");
+    domselect("#Syslog-form").parentNode.setAttribute("hidden", "");
   }
-  $("#SNTP-form").removeAttribute("hidden");
-  $("#mDNS-form").removeAttribute("hidden");
+  domselect("#SNTP-form").removeAttribute("hidden");
+  domselect("#mDNS-form").removeAttribute("hidden");
 
-  var i, inputs = $("input");
+  var i, inputs = domselect("input");
   for (i = 0; i < inputs.length; i++) {
     if (inputs[i].name == "mdns_enable") inputs[i].onclick = function () { setMDNS(this.checked) };
   }

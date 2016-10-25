@@ -73,7 +73,7 @@
   onLoad(function() {
     fetchText(100, true);
 
-    $("#reset-button").addEventListener("click", function(e) {
+    domselect("#reset-button").addEventListener("click", function(e) {
       e.preventDefault();
       var co = $("#console");
       co.innerHTML = "";
@@ -83,7 +83,7 @@
       );
     });
 
-    $("#clear-button").addEventListener("click", function(e) {
+    domselect("#clear-button").addEventListener("click", function(e) {
         e.preventDefault();
         var co = $("#console");
         co.innerHTML = "";
@@ -94,7 +94,7 @@
       function(s, st) { showNotification(st); }
     );
 
-    bnd($("#baud-sel"), "change", function(ev) {
+    bnd(domselect("#baud-sel"), "change", function(ev) {
       ev.preventDefault();
       var baud = $("#baud-sel").value;
       ajaxSpin('POST', "/console/baud?rate="+baud,
@@ -108,9 +108,9 @@
       function(s, st) { showNotification(st); }
     );
 
-    bnd($("#fmt-sel"), "change", function(ev) {
+    bnd(domselect("#fmt-sel"), "change", function(ev) {
       ev.preventDefault();
-      var fmt = $("#fmt-sel").value;
+      var fmt = domselect("#fmt-sel").value;
       ajaxSpin('POST', "/console/fmt?fmt="+fmt,
         function(resp) { showNotification("" + fmt + " format set"); },
         function(s, st) { showWarning("Error setting format: " + st); }
@@ -119,10 +119,10 @@
 
     consoleSendInit();
 
-    addClass($('html')[0], "height100");
-    addClass($('body')[0], "height100");
-    addClass($('#layout'), "height100");
-    addClass($('#layout'), "flex-vbox");
+    addClass(domselect('html')[0], "height100");
+    addClass(domselect('body')[0], "height100");
+    addClass(domselect('#layout'), "height100");
+    addClass(domselect('#layout'), "flex-vbox");
   });
 </script>
 </body></html>

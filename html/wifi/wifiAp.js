@@ -39,7 +39,7 @@ function changeApSettings(e) {
 
   hideWarning();
   var n = e.target.id.replace("-form", "");
-  var cb = $("#" + n + "-button");
+  var cb = domselect("#" + n + "-button");
   addClass(cb, "pure-button-disabled");
   ajaxSpin("POST", url, function (resp) {
     showNotification(n + " updated");
@@ -54,7 +54,7 @@ function changeApSettings(e) {
 
 function displayApSettings(data) {
   Object.keys(data).forEach(function (v) {
-    el = $("#" + v);
+    el = domselect("#" + v);
     if (el != null) {
       if (el.nodeName === "INPUT") el.value = data[v];
       else el.innerHTML = data[v];
@@ -72,8 +72,8 @@ function displayApSettings(data) {
     }
   });
 
-  $("#AP_Settings-spinner").setAttribute("hidden", "");
-  $("#AP_Settings-form").removeAttribute("hidden");
+  domselect("#AP_Settings-spinner").setAttribute("hidden", "");
+  domselect("#AP_Settings-form").removeAttribute("hidden");
   showWarning("Don't modify SOFTAP parameters with active connections");
   window.setTimeout(hideWarning(), 2000);
 }

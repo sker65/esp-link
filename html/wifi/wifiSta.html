@@ -20,7 +20,7 @@
           <tr><td colspan="2" id="wifi-warn"></td></tr>
           </tbody> </table>
         </div>
-        
+
         </div>
         <div class="pure-u-1 pure-u-md-1-2"><div class="card">
           <h1>WiFi Association</h1>
@@ -76,10 +76,10 @@
 <script type="text/javascript">
 onLoad(function() {
   getWifiInfo();
-  bnd($("#wifiform"), "submit", changeWifiAp);
-  bnd($("#specform"), "submit", changeSpecial);
-  bnd($("#dhcp-ron"), "click", doDhcp);
-  bnd($("#dhcp-roff"), "click", doStatic);
+  bnd(domselect("#wifiform"), "submit", changeWifiAp);
+  bnd(domselect("#specform"), "submit", changeSpecial);
+  bnd(domselect("#dhcp-ron"), "click", doDhcp);
+  bnd(domselect("#dhcp-roff"), "click", doStatic);
   scanTimeout = window.setTimeout(scanAPs, 500);
 });
 </script>
