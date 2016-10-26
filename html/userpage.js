@@ -97,6 +97,7 @@ function notifyResponse( data )
         elem.innerHTML = html;
       }
     } else {
+    	// this is really jquery
       	$("."+v).removeClass("btn-primary");
  		$("#"+v+'_'+data[v]).addClass("btn-primary");
     }

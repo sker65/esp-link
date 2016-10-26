@@ -32,6 +32,7 @@
 #include "gpio.h"
 #include "cgiservices.h"
 #include "web-server.h"
+#include "cgicmdupload.h"
 
 #ifdef SYSLOG
 #include "syslog.h"
@@ -101,6 +102,7 @@ HttpdBuiltInUrl builtInUrls[] = {
   { "/mqtt", cgiMqtt, NULL },
 #endif
   { "/web-server/upload", cgiWebServerSetupUpload, NULL },
+  { "/mcu/upload", cgiCmdUpload, NULL },
   { "*.json", WEB_CgiJsonHook, NULL }, //Catch-all cgi JSON queries
   { "*", cgiEspFsHook, NULL }, //Catch-all cgi function for the filesystem
   { NULL, NULL, NULL }

@@ -240,7 +240,7 @@ function menuLevel( level ) {
   					<button type="button" id="mo_29_0" class="mo_29 btn btn-default">off</button>
   					<button type="button" id="mo_29_1" class="mo_29 btn btn-default">on</button>
 				</div>
-				<br/><b class="col-sm-4"data-toggle="tooltip" title="Adjust offset of temperatur sensor">Temp-Offset:</b>
+				<br/><b class="col-sm-4" data-toggle="tooltip" title="Adjust offset of temperatur sensor">Temp-Offset:</b>
       				<select class="form-control" style="width: 5em; display: inline-block;" id="mo_23">
      				   	<option>-10</option>
      				   	<option>-9</option>
@@ -278,7 +278,7 @@ function menuLevel( level ) {
 			</div>
 		</div>
         <div class="pure-u-1 pure-u-md-1-2">
-			<div class="card">
+		  <div class="card">
             <h1>Info & Credits</h1>
             <p style="margin-bottom:0;">
             This configuration UI is based on the excellent work of jeelabs esp-link (see below). Many thanks to the great team around Thorsten
@@ -297,6 +297,15 @@ function menuLevel( level ) {
             for up-to-date help.</p>
           </div>
         </div>
+        <!-- div class="pure-u-1 pure-u-md-1-2">
+		  <div class="card">
+		      <form method="post" action="/mcu/upload" name="submit" enctype="multipart/form-data" ">
+		        The custom file to upload to godmd: <input type="file" name="data" multiple>
+		        <input type="submit" name="submit" value="Submit">
+		      </form>
+          </div>
+        </div -->
+
 	  </div>
     </div>
   </div>

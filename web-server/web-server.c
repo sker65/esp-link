@@ -34,7 +34,7 @@ static char* web_server_reasons[] = {
 
 // this variable contains the names of the user defined pages
 // this information appears at the left frame below of the built in URL-s
-// format:    ,"UserPage1", "/UserPage1.html", "UserPage2", "/UserPage2.html", 
+// format:    ,"UserPage1", "/UserPage1.html", "UserPage2", "/UserPage2.html",
 char * webServerPages = NULL;
 
 char * ICACHE_FLASH_ATTR WEB_UserPages()
@@ -47,7 +47,7 @@ void ICACHE_FLASH_ATTR WEB_BrowseFiles()
 {
 	char buffer[1024];
 	buffer[0] = 0;
-	
+
 	if( espFsIsValid( userPageCtx ) )
 	{
 		EspFsIterator it;
@@ -61,23 +61,23 @@ void ICACHE_FLASH_ATTR WEB_BrowseFiles()
 				if( os_strcmp( it.name + nameLen-5, ".html" ) == 0 )
 				{
 					int slashPos = nameLen - 5;
-					
+
 					// chop path and .html from the name
 					while( slashPos > 0 && it.name[slashPos-1] != '/' )
 						slashPos--;
-					
+
 					// here we check buffer overrun
 					int maxLen = 10 + os_strlen( it.name ) + (nameLen - slashPos -5);
 					if( maxLen >= sizeof(buffer) )
 						break;
-					
+
 					os_strcat(buffer, ", \"");
-					
+
 					int writePos = os_strlen(buffer);
 					for( int i=slashPos; i < nameLen-5; i++ )
 					  buffer[writePos++] = it.name[i];
 					buffer[writePos] = 0; // terminating zero
-					
+
 					os_strcat(buffer, "\", \"/");
 					os_strcat(buffer, it.name);
 					os_strcat(buffer, "\"");
@@ -85,10 +85,10 @@ void ICACHE_FLASH_ATTR WEB_BrowseFiles()
 			}
 		}
 	}
-	
+
 	if( webServerPages != NULL )
 		os_free( webServerPages );
-	
+
 	int len = os_strlen(buffer) + 1;
 	webServerPages = (char *)os_malloc( len );
 	os_memcpy( webServerPages, buffer, len );
@@ -117,15 +117,15 @@ static int ICACHE_FLASH_ATTR WEB_addArg(struct ArgumentBuffer * argBuffer, char 
 {
 	if( argBuffer->argBufferPtr + argLen + sizeof(int) >= MAX_ARGUMENT_BUFFER_SIZE )
 		return -1; // buffer overflow
-	
+
 	os_memcpy(argBuffer->argBuffer + argBuffer->argBufferPtr, &argLen, sizeof(int));
-	
+
 	if( argLen != 0 )
 	{
 		os_memcpy( argBuffer->argBuffer + argBuffer->argBufferPtr + sizeof(int), arg, argLen );
 		argBuffer->numberOfArgs++;
 	}
-	
+
 	argBuffer->argBufferPtr += argLen + sizeof(int);
 	return 0;
 }
@@ -139,18 +139,18 @@ static void ICACHE_FLASH_ATTR WEB_sendArgBuffer(struct ArgumentBuffer * argBuffe
 	cmdResponseBody(&connData->conn->proto.tcp->remote_ip, 4);                  // 2nd argument: IP
 	cmdResponseBody(&connData->conn->proto.tcp->remote_port, sizeof(uint16_t)); // 3rd argument: port
 	cmdResponseBody(connData->url, os_strlen(connData->url));                   // 4th argument: URL
-	
+
 	int p = 0;
 	for( int j=0; j < argBuffer->numberOfArgs; j++ )
 	{
 		int argLen;
 		os_memcpy( &argLen, argBuffer->argBuffer + p, sizeof(int) );
-		
+
 		char * arg = argBuffer->argBuffer + p + sizeof(int);
 		cmdResponseBody(arg, argLen);
 		p += argLen + sizeof(int);
 	}
-	
+
 	cmdResponseEnd();
 }
 
@@ -163,7 +163,7 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 		errorResponse(connData, 400, "Slip processing is disabled!");
 		return HTTPD_CGI_DONE;
 	}
-	
+
 	if( web_server_cb == 0 )
 	{
 		errorResponse(connData, 500, "No MCU callback is registered!");
@@ -174,7 +174,7 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 		errorResponse(connData, 500, "Slip disabled at uploading program onto the MCU!");
 		return HTTPD_CGI_DONE;
 	}
-	
+
 	char reasonBuf[16];
 	int i;
 	int len = httpdFindArg(connData->getArgs, "reason", reasonBuf, sizeof(reasonBuf));
@@ -183,29 +183,29 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 		errorResponse(connData, 400, "No reason specified!");
 			return HTTPD_CGI_DONE;
 	}
-	
+
 	RequestReason reason = INVALID;
 	for(i=0; i < sizeof(web_server_reasons)/sizeof(char *); i++)
 	{
 		if( os_strcmp( web_server_reasons[i], reasonBuf ) == 0 )
 			reason = (RequestReason)i;
 	}
-	
+
 	if( reason == INVALID )
 	{
 		errorResponse(connData, 400, "Invalid reason!");
 		return HTTPD_CGI_DONE;
 	}
-	
+
 	struct ArgumentBuffer argBuffer;
 	WEB_argInit( &argBuffer );
-	
+
 	switch(reason)
 	{
 		case BUTTON:
 			{
 				char id_buf[40];
-				
+
 				int id_len = httpdFindArg(connData->getArgs, "id", id_buf, sizeof(id_buf));
 				if( id_len <= 0 )
 				{
@@ -226,15 +226,15 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 					errorResponse(connData, 400, "Post too large!");
 					return HTTPD_CGI_DONE;
 				}
-				
+
 				int bptr = 0;
 				int sent_args = 0;
 				int max_buf_size = MAX_ARGUMENT_BUFFER_SIZE - HEADER_SIZE - os_strlen(connData->url);
-				
+
 				while( bptr < connData->post->len )
 				{
 					char * line = connData->post->buff + bptr;
-					
+
 					char * eo = os_strchr(line, '&' );
 					if( eo != NULL )
 					{
@@ -246,12 +246,12 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 						eo = line + os_strlen( line );
 						bptr = connData->post->len;
 					}
-					
+
 					int len = os_strlen(line);
 					while( len >= 1 && ( line[len-1] == '\r' || line[len-1] == '\n' ))
 						len--;
 					line[len] = 0;
-					
+
 					char * val = os_strchr(line, '=');
 					if( val != NULL )
 					{
@@ -260,10 +260,10 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 						int vblen = os_strlen(val+1) * 2;
 						char value[vblen];
 						httpdUrlDecode(val+1, strlen(val+1), value, vblen);
-						
+
 						int namLen = os_strlen(name);
 						int valLen = os_strlen(value);
-						
+
 						char arg[namLen + valLen + 3];
 						int argPtr = 0;
 						arg[argPtr++] = (char)WEB_STRING;
@@ -272,7 +272,7 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 						arg[argPtr++] = 0;
 						os_strcpy( arg + argPtr, value );
 						argPtr += valLen;
-						
+
 						if( sent_args != 0 )
 						{
 							if( argBuffer.argBufferPtr + argPtr >= max_buf_size )
@@ -283,7 +283,7 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 								sent_args = 0;
 							}
 						}
-						
+
 						if( WEB_addArg(&argBuffer, arg, argPtr) )
 						{
 							errorResponse(connData, 400, "Post too large!");
@@ -299,25 +299,29 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 		default:
 			break;
 	}
-	
+
 	if( WEB_addArg(&argBuffer, NULL, 0) )
 	{
 		errorResponse(connData, 400, "Post too large!");
 		return HTTPD_CGI_DONE;
 	}
-	
+
 	os_printf("Web callback to MCU: %s\n", reasonBuf);
-	
+
 	WEB_sendArgBuffer(&argBuffer, connData, reason );
-	
+
 	if( reason == SUBMIT )
 	{
 		httpdStartResponse(connData, 204);
 		httpdEndHeaders(connData);
 		return HTTPD_CGI_DONE;
 	}
-	
+
 	return HTTPD_CGI_MORE;
+}
+
+// gets called when mcu send response to upload
+void WEB_Upload(CmdPacket *cmd) {
 }
 
 // this method receives SLIP data from MCU sends JSON to the browser
@@ -325,42 +329,41 @@ static int ICACHE_FLASH_ATTR WEB_handleMCUResponse(HttpdConnData *connData, CmdR
 {
 	char jsonBuf[1500];
 	int  jsonPtr = 0;
-	
-	
+
 	jsonBuf[jsonPtr++] = '{';
-	
+
 	int c = 2;
 	while( c++ < cmdGetArgc(response) )
 	{
 		int len = cmdArgLen(response);
 		char buf[len+1];
 		buf[len] = 0;
-		
+
 		cmdPopArg(response, buf, len);
-		
+
 		if(len == 0)
 			break; // last argument
-		
+
 		if( c > 3 ) // skip the first argument
 			jsonBuf[jsonPtr++] = ',';
-		
+
 		if( jsonPtr + 20 + len > sizeof(jsonBuf) )
 		{
 			errorResponse(connData, 500, "Response too large!");
 			return HTTPD_CGI_DONE;
 		}
-		
+
 		WebValueType type = (WebValueType)buf[0];
-		
+
 		int nameLen = os_strlen(buf+1);
 		jsonBuf[jsonPtr++] = '"';
 		os_memcpy(jsonBuf + jsonPtr, buf + 1, nameLen);
 		jsonPtr += nameLen;
 		jsonBuf[jsonPtr++] = '"';
 		jsonBuf[jsonPtr++] = ':';
-		
+
 		char * value = buf + 2 + nameLen;
-		
+
 		switch(type)
 		{
 			case WEB_NULL:
@@ -371,7 +374,7 @@ static int ICACHE_FLASH_ATTR WEB_handleMCUResponse(HttpdConnData *connData, CmdR
 				{
 					int v;
 					os_memcpy( &v, value, 4);
-					
+
 					char intbuf[20];
 					os_sprintf(intbuf, "%d", v);
 					os_strcpy(jsonBuf + jsonPtr, intbuf);
@@ -391,13 +394,13 @@ static int ICACHE_FLASH_ATTR WEB_handleMCUResponse(HttpdConnData *connData, CmdR
 				{
 					float f;
 					os_memcpy( &f, value, 4);
-					
+
 					// os_sprintf doesn't support %f
 					int intPart = f;
 					int fracPart = (f - intPart) * 1000; // use 3 digit precision
 					if( fracPart < 0 ) // for negative numbers
 						fracPart = -fracPart;
-					
+
 					char floatBuf[20];
 					os_sprintf(floatBuf, "%d.%03d", intPart, fracPart);
 					os_strcpy(jsonBuf + jsonPtr, floatBuf);
@@ -420,17 +423,17 @@ static int ICACHE_FLASH_ATTR WEB_handleMCUResponse(HttpdConnData *connData, CmdR
 				break;
 		}
 	}
-	
+
 	jsonBuf[jsonPtr++] = '}';
-	
+
 	noCacheHeaders(connData, 200);
 	httpdHeader(connData, "Content-Type", "application/json");
-	
+
 	char cl[16];
 	os_sprintf(cl, "%d", jsonPtr);
 	httpdHeader(connData, "Content-Length", cl);
 	httpdEndHeaders(connData);
-	
+
 	httpdSend(connData, jsonBuf, jsonPtr);
 	return HTTPD_CGI_DONE;
 }
@@ -439,18 +442,18 @@ static int ICACHE_FLASH_ATTR WEB_handleMCUResponse(HttpdConnData *connData, CmdR
 int ICACHE_FLASH_ATTR WEB_CgiJsonHook(HttpdConnData *connData)
 {
 	if (connData->conn==NULL) return HTTPD_CGI_DONE; // Connection aborted. Clean up.
-	
+
 	void * cgiData = connData->cgiData;
-	
+
 	if( cgiData == NULL )
 	{
 		connData->cgiData = (void *)1; // indicate, that request was processed
 		return WEB_handleJSONRequest(connData);
 	}
-	
+
 	if( connData->cgiResponse != NULL ) // data from MCU
 		return WEB_handleMCUResponse(connData, (CmdRequest *)(connData->cgiResponse));
-	
+
 	return HTTPD_CGI_MORE;
 }
 
@@ -459,11 +462,11 @@ void ICACHE_FLASH_ATTR WEB_Setup(CmdPacket *cmd)
 {
 	CmdRequest req;
 	cmdRequest(&req, cmd);
-	
+
 	if (cmdGetArgc(&req) < 1) return;
-	
+
 	cmdPopArg(&req, &web_server_cb, 4); // pop the callback
-	
+
 	os_printf("Web-server connected, cb=0x%x\n", web_server_cb);
 }
 
@@ -472,15 +475,15 @@ void ICACHE_FLASH_ATTR WEB_Data(CmdPacket *cmd)
 {
 	CmdRequest req;
 	cmdRequest(&req, cmd);
-	
+
 	if (cmdGetArgc(&req) < 2) return;
-	
+
 	uint8_t ip[4];
 	cmdPopArg(&req, ip, 4);    // pop the IP address
-	
+
 	uint16_t port;
 	cmdPopArg(&req, &port, 2); // pop the HTTP port
-	
+
 	HttpdConnData * conn = httpdLookUpConn(ip, port);  // look up connection based on IP/port
 	if( conn != NULL && conn->cgi == WEB_CgiJsonHook ) // make sure that the right CGI handler is configured
 		httpdSetCGIResponse( conn, &req );

@@ -41,7 +41,7 @@ function displayMqtt(data) {
   domselect("#mqtt-form").removeAttribute("hidden");
   domselect("#mqtt-status-form").removeAttribute("hidden");
 
-  var i, inputs = $("input");
+  var i, inputs = domselect("input");
   for (i = 0; i < inputs.length; i++) {
     if (inputs[i].type == "checkbox")
       inputs[i].onclick = function () { setMqtt(this.name, this.checked) };

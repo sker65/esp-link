@@ -61,6 +61,7 @@ const CmdList commands[] = {
   {CMD_SOCKET_SETUP,    "SOCKET_SETUP",   SOCKET_Setup},
   {CMD_SOCKET_SEND,     "SOCKET_SEND",    SOCKET_Send},
 #endif
+  {CMD_UPLOAD_RESP,       "UPLOAD",      WEB_Upload},
 };
 
 //===== List of registered callbacks (to uC)

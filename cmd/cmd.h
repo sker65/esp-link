@@ -58,6 +58,12 @@ typedef enum {
   CMD_SOCKET_SETUP = 40, // set-up callbacks
   CMD_SOCKET_SEND,       // send data over UDP socket
 
+  CMD_UPLOAD_START = 50,		 // cmd for uploading files to the mcu
+  CMD_UPLOAD_DATA,
+  CMD_UPLOAD_END,
+  CMD_UPLOAD_RESP,
+
+
 } CmdName;
 
 typedef void (*cmdfunc_t)(CmdPacket *cmd);
