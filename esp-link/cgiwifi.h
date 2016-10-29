@@ -20,6 +20,7 @@ void wifiInit(void);
 void wifiAddStateChangeCb(WifiStateChangeCb cb);
 void wifiStartMDNS(struct ip_addr);
 int checkString(char *str);
+int ICACHE_FLASH_ATTR cgiRedirectWifi(HttpdConnData *connData);
 
 extern uint8_t wifiState;
 extern bool mdns_started;

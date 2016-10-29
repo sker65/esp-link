@@ -110,6 +110,19 @@ static void ICACHE_FLASH_ATTR wifiHandleEventCb(System_Event_t *evt) {
   }
 }
 
+int ICACHE_FLASH_ATTR cgiRedirectWifi(HttpdConnData *connData) {
+  if (connData->conn == NULL) {
+    //Connection aborted. Clean up.
+    return HTTPD_CGI_DONE;
+  }
+  if( wifiState == wifiGotIP ) {
+	  httpdRedirect(connData, "/godmd/index.html");
+  } else {
+	  httpdRedirect(connData, "/home.html");
+  }
+  return HTTPD_CGI_DONE;
+}
+
 void ICACHE_FLASH_ATTR wifiAddStateChangeCb(WifiStateChangeCb cb) {
   for (int i = 0; i < 4; i++) {
     if (wifi_state_change_cb[i] == cb) return;
