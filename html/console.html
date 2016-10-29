@@ -9,6 +9,7 @@
         &nbsp; <a id="clear-button" class="pure-button button-primary" href="#">Clear Log</a>
         &nbsp; Baud:
         <select id="baud-sel" class="pure-button" href="#">
+          <option value="921600">921600</option>
           <option value="460800">460800</option>
           <option value="250000">250000</option>
           <option value="230400">230400</option>
@@ -75,7 +76,7 @@
 
     domselect("#reset-button").addEventListener("click", function(e) {
       e.preventDefault();
-      var co = $("#console");
+      var co = domselect("#console");
       co.innerHTML = "";
       ajaxSpin('POST', "/console/reset",
         function(resp) { showNotification("uC reset"); co.textEnd = 0; },
@@ -85,18 +86,18 @@
 
     domselect("#clear-button").addEventListener("click", function(e) {
         e.preventDefault();
-        var co = $("#console");
+        var co = domselect("#console");
         co.innerHTML = "";
     });
 
     ajaxJson('GET', "/console/baud",
-      function(data) { $("#baud-sel").value = data.rate; },
+      function(data) { domselect("#baud-sel").value = data.rate; },
       function(s, st) { showNotification(st); }
     );
 
     bnd(domselect("#baud-sel"), "change", function(ev) {
       ev.preventDefault();
-      var baud = $("#baud-sel").value;
+      var baud = domselect("#baud-sel").value;
       ajaxSpin('POST', "/console/baud?rate="+baud,
         function(resp) { showNotification("" + baud + " baud set"); },
         function(s, st) { showWarning("Error setting baud rate: " + st); }
@@ -104,7 +105,7 @@
     });
 
     ajaxJson('GET', "/console/fmt",
-      function(data) { $("#fmt-sel").value = data.fmt; },
+      function(data) { domselect("#fmt-sel").value = data.fmt; },
       function(s, st) { showNotification(st); }
     );
 
