@@ -33,7 +33,6 @@ char * WEB_UserPages();
 int    WEB_CgiJsonHook(HttpdConnData *connData);
 void   WEB_Setup(CmdPacket *cmd);
 void   WEB_Data(CmdPacket *cmd);
-void   WEB_Upload(CmdPacket *cmd);
 
 #endif /* WEB_SERVER_H */
 

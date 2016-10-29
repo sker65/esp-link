@@ -320,9 +320,6 @@ static int ICACHE_FLASH_ATTR WEB_handleJSONRequest(HttpdConnData *connData)
 	return HTTPD_CGI_MORE;
 }
 
-// gets called when mcu send response to upload
-void WEB_Upload(CmdPacket *cmd) {
-}
 
 // this method receives SLIP data from MCU sends JSON to the browser
 static int ICACHE_FLASH_ATTR WEB_handleMCUResponse(HttpdConnData *connData, CmdRequest * response)
