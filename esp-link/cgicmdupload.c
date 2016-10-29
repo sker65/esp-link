@@ -9,6 +9,8 @@
 #include "web-server.h"
 #include "cmd.h"
 
+static int paketAck = 0;
+
 #define DBG(format, ...) do { os_printf(format, ## __VA_ARGS__); } while(0)
 
 // multipart callback for uploading user defined pages
@@ -48,10 +50,11 @@ int ICACHE_FLASH_ATTR mcuUploadMultipartCallback(MultipartCmd cmd, char *data, i
 				pos += toSend;
 				toSend = (remain > UPLOAD_CHUNK_SIZE) ? UPLOAD_CHUNK_SIZE : remain;
 			}
+			paketAck = 1;
 		}
       break;
     case FILE_DONE:
-		cmdResponseStart(CMD_UPLOAD_END, 0, 0);
+		cmdResponseStart(CMD_UPLOAD_END, position, 0);
     	cmdResponseEnd();
       break;
 
@@ -60,6 +63,14 @@ int ICACHE_FLASH_ATTR mcuUploadMultipartCallback(MultipartCmd cmd, char *data, i
   }
   return 0;
 }
+
+// gets called when mcu send response to upload
+void WEB_Upload(CmdPacket *cmd) {
+}
+
+void WEB_UploadAck(CmdPacket *cmd) {
+}
+
 
 MultipartCtx * mcuUploadContext = NULL; // multipart upload context for web server
 
