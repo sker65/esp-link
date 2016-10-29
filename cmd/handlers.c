@@ -14,6 +14,7 @@
 #include <rest.h>
 #endif
 #include <web-server.h>
+#include <cgicmdupload.h>
 #ifdef SOCKET
 #include <socket.h>
 #endif
@@ -61,7 +62,8 @@ const CmdList commands[] = {
   {CMD_SOCKET_SETUP,    "SOCKET_SETUP",   SOCKET_Setup},
   {CMD_SOCKET_SEND,     "SOCKET_SEND",    SOCKET_Send},
 #endif
-  {CMD_UPLOAD_RESP,       "UPLOAD",      WEB_Upload},
+  {CMD_UPLOAD_RESP,      "UPLOAD",     	 WEB_Upload},
+  {CMD_UPLOAD_ACK,       "UPLOADACK",    WEB_UploadAck},
 };
 
 //===== List of registered callbacks (to uC)
