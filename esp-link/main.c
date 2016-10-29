@@ -65,7 +65,7 @@ general ones. Authorization things (like authBasic) act as a 'barrier' and
 should be placed above the URLs they protect.
 */
 HttpdBuiltInUrl builtInUrls[] = {
-  { "/", cgiRedirect, "/godmd/index.html" },
+  { "/", cgiRedirectWifi, NULL },
   { "/menu", cgiMenu, NULL },
   { "/flash/next", cgiGetFirmwareNext, NULL },
   { "/flash/upload", cgiUploadFirmware, NULL },
@@ -161,7 +161,7 @@ user_init(void) {
   gpio_output_set(0, 0, 0, (1<<15)); // some people tie it to GND, gotta ensure it's disabled
   // init UART
   uart_init(CALC_UARTMODE(flashConfig.data_bits, flashConfig.parity, flashConfig.stop_bits),
-            flashConfig.baud_rate, 115200);
+            flashConfig.baud_rate, 921600);
   logInit(); // must come after init of uart
   // Say hello (leave some time to cause break in TX after boot loader's msg
   os_delay_us(10000L);
