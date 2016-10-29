@@ -61,6 +61,7 @@ typedef enum {
   CMD_UPLOAD_START = 50,		 // cmd for uploading files to the mcu
   CMD_UPLOAD_DATA,
   CMD_UPLOAD_END,
+  CMD_UPLOAD_ACK,
   CMD_UPLOAD_RESP,
 
 
