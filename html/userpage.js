@@ -4,9 +4,12 @@ var loadCounter = 0;
 var refreshRate = 0;
 var refreshTimer;
 var hiddenInputs = [];
+var firmwareVersion;
 
 function notifyResponse( data )
 {
+	firmwareVersion = data.firmversion;
+	checkLatestVersion();
   Object.keys(data).forEach(function(v) {
     var elems = document.getElementsByName(v);
     var ndx;
