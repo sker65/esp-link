@@ -4,6 +4,9 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js"></script>
 <script src="/userpage.js"></script>
 <script>
+
+var latestVersion = '';
+
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 	$("select").change( function() {
@@ -13,6 +16,23 @@ $(document).ready(function(){
 		notifyButtonPressed( $(this).attr("id") + "_" + $(this).val() );
 	});
 });
+
+function checkLatestVersion() {
+	if( latestVersion == '' ) {
+		$.getJSON( "http://go-dmd.de/packages/sker65/godmd-stm32/Firmware/versions/_latest", function( data ) {
+			latestVersion = data.name;
+			console.log('latest version on bintray: ' + latestVersion );
+			console.log('firmware version : ' + firmwareVersion );
+			checkLatestVersion();
+		});
+	}
+	if( latestVersion != firmwareVersion ) {
+		$('#lastestversion').html(latestVersion);
+		$('#newerFirmware').show();
+	} else {
+		$('#newerFirmware').hide();
+	}
+}
 
 function menuLevel( level ) {
 	var url = "/services/update?1=1&menu_level="+level;
@@ -31,6 +51,9 @@ function menuLevel( level ) {
   <div id="main">
     <div class="header">
         <h1>goDMD - Config <span style="font-size: 16px;">Firmware: <span id="firmversion"></span></span></h1>
+        <div id="newerFirmware" style="display: none;">There is a <a target="_blank" href="http://go-dmd.de/changelog/">newer firmware</a> available.
+        <a target="_blank" href="https://bintray.com/sker65/godmd-stm32/Firmware/_latestVersion"><img src="https://api.bintray.com/packages/sker65/godmd-stm32/Firmware/images/download.svg"></a>
+        </div>
     </div>
 
     <div class="content">
@@ -183,7 +206,7 @@ function menuLevel( level ) {
         <div class="pure-u-1 pure-u-md-1-2">
 			<div class="card">
 				<h2>Display</h2>
-				<b class="col-sm-4">Brightness:</b><input id="mo_1" style="width: 15em; display: inline-block;" type="range" name="frequency" min="2" max="20"><br/>
+				<b class="col-sm-4">Brightness:</b><input id="mo_1" style="width: 15em; display: inline-block;" type="range" name="frequency" min="1" max="30"><br/>
 				<br/><b class="col-sm-4">Duration Clock:</b>
 				<div class="btn-group" role="group" aria-label="...">
   					<button type="button" id="mo_9_5" class="mo_9 btn btn-default">5</button>
@@ -215,6 +238,13 @@ function menuLevel( level ) {
   					<button type="button" id="mo_24_20" class="mo_24 btn btn-default">20</button>
   					<button type="button" id="mo_24_60" class="mo_24 btn btn-default">60</button>
 				</div> sec.
+				<br/><b class="col-sm-4">PIR Hold Time:</b>
+				<div class="btn-group" role="group" aria-label="...">
+  					<button type="button" id="mo_21_0" class="mo_21 btn btn-default">30s</button>
+  					<button type="button" id="mo_21_3" class="mo_21 btn btn-default">60s</button>
+  					<button type="button" id="mo_21_9" class="mo_21 btn btn-default">2min</button>
+  					<button type="button" id="mo_21_27" class="mo_21 btn btn-default">5min</button>
+				</div>
 			</div>
 			<div class="card">
 				<h2>Misc</h2>
